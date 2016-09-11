@@ -1,29 +1,20 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include "Definitions.h"
 #include <iostream>
 
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
 {
-    // 'scene' is an autorelease object
     auto scene = Scene::create();
-    
-    // 'layer' is an autorelease object
     auto layer = HelloWorld::create();
-
-    // add layer as a child to scene
     scene->addChild(layer);
-
-    // return the scene
     return scene;
 }
 
-// on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
-    //////////////////////////////
-    // 1. super init first
     if ( !Layer::init() )
     {
         return false;
@@ -37,11 +28,6 @@ bool HelloWorld::init()
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
-
-    // add a "close" icon to exit the progress. it's an autorelease object
     auto closeItem = MenuItemImage::create("CloseNormal.png", "CloseSelected.png", CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
     
     closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
@@ -52,20 +38,6 @@ bool HelloWorld::init()
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-    
-    auto label = Label::createWithTTF("coc", "fonts/Marker Felt.ttf", 24);
-    
-    // position the label on the center of the screen
-    label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                            origin.y + visibleSize.height - label->getContentSize().height));
-
-    // add the label as a child to this layer
-    this->addChild(label, 1);
 
 	auto touchListener = EventListenerTouchOneByOne::create();
 	touchListener->setSwallowTouches(true);
@@ -91,7 +63,7 @@ bool HelloWorld::init()
 	this->addChild(road_upper_part);
 
 	user_car = Sprite::create("cars/taxi.png");
-	user_car->setPosition(Vec2(visibleSize.width - 120,150));
+	user_car->setPosition(Vec2(visibleSize.width - LEFT_CAR_POSITION, 150));
 	user_car->setName("user");
 	//user_car->setRotation(-90);
 	this->addChild(user_car,1);
@@ -129,16 +101,16 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event) {
 	Rect stopRect(800, 0, 200, 200);
 	if (gasRect.containsPoint(touchPoint)) {
 		CCLOG("GOOOOO");
-		onTouch = 1;
+		onTouch = gas;
 	}
 	if (stopRect.containsPoint(touchPoint))
-		onTouch = -1;
+		onTouch = brakes;
 //	this->schedule(schedule_selector(HelloWorld::increaseSpeed), 0.1f);
 	return true;
 }
 
 void HelloWorld::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *event) {
-	onTouch = 0;
+	onTouch = freeMovement;
 //	this->schedule(schedule_selector(HelloWorld::decreaseSpeed), 0.1f);
 	return;
 }
@@ -156,11 +128,11 @@ void HelloWorld::decreaseSpeed(float dt) {
 
 void HelloWorld::update(float dt) {
 	/*нопедекъер онбедемхе юбрн 1 - цюг, -1 - рнплнг, 0 - ябнандмне дбхфемхе*/
-	if ((onTouch == 1) && (carSpeed < 200))
+	if ((onTouch == gas) && (carSpeed < 200))
 		carSpeed += 1;
-	else if ((onTouch == -1) && (carSpeed > 20))
+	else if ((onTouch == brakes) && (carSpeed > MIN_SPEED))
 		carSpeed -= 3;
-	else if ((onTouch == 00000) && (carSpeed > 20))
+	else if ((onTouch == freeMovement) && (carSpeed > MIN_SPEED))
 		carSpeed -= 1;
 	/*опнпхянбйю тнмю*/
 	auto visibleSize = Director::getInstance()->getVisibleSize();

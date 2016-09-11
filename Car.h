@@ -2,27 +2,26 @@
 #define __CAR_H__
 
 #include "cocos2d.h"
+#include "Definitions.h"
 USING_NS_CC;
+
+enum CarType {Ambulance, Black_viper, Orange_car, Mini_truck, Mini_van, Police, Taxi, Truck};
 
 class Car : public cocos2d::Sprite
 {
 private:
-	cocos2d::Size visibleSize;
-	cocos2d::Vec2 origin;
 
 	int speed;
 
+	CarType type;
+
 	Car();
+
 	virtual bool init() { return true; };
 
 	Point definePosition();
 
-	int defineSpeed();
-//	void increaseSpeed(float dt);
-
-//	void decreaseSpeed(float dt);
-
-//	void generateNewCar(float dt);
+	int defineSpeed(int minSpeed, int deltaSpeed);
 
 public:
 	static Car* create();

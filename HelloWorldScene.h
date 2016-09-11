@@ -4,6 +4,8 @@
 #include "cocos2d.h"
 #include "Car.h"
 
+enum moveOption { brakes = -1, freeMovement, gas };
+
 class HelloWorld : public cocos2d::Layer
 {
 private:
@@ -12,9 +14,8 @@ private:
 	cocos2d::Sprite *user_car;
 //	Car* nCar;
 
-	int onTouch = 0;
-	int carSpeed = 20;
-	int carNumber = 1;
+	moveOption onTouch = freeMovement;
+	int carSpeed = MIN_SPEED;
 	void update(float dt);
 
 	void increaseSpeed(float dt);

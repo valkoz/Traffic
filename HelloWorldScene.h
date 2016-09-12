@@ -12,6 +12,7 @@ private:
 	cocos2d::Sprite *road;
 	cocos2d::Sprite *road_upper_part;
 	cocos2d::Sprite *user_car;
+	float accInfo = 1;
 //	Car* nCar;
 
 	moveOption onTouch = freeMovement;

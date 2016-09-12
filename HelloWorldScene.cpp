@@ -62,10 +62,10 @@ bool HelloWorld::init()
 	road_upper_part->setPosition(Vec2(visibleSize.width / 2 + origin.x, 3 * visibleSize.height / 2 + origin.y));
 	this->addChild(road_upper_part);
 
-	user_car = Sprite::create("cars/Taxi.png");
+	user_car = Sprite::create("cars/car_red.png");
 	user_car->setPosition(Vec2(visibleSize.width - LEFT_CAR_POSITION, 150));
 	user_car->setName("user");
-	//user_car->setRotation(-90);
+	user_car->setRotation(-90);
 	this->addChild(user_car,1);
 
 	this->schedule(schedule_selector(HelloWorld::generateNewCar), 1.0f);
@@ -81,6 +81,7 @@ bool HelloWorld::init()
 
 void HelloWorld::onAcceleration(cocos2d::Acceleration *acc, cocos2d::Event *event)
 {
+	accInfo = acc->x;
 //	auto user_car = Sprite::create("car_red.png");
 //	user_car->setPosition(0,0);
 //	this->addChild(user_car, 1);
@@ -144,6 +145,9 @@ void HelloWorld::update(float dt) {
 	if (road_upper_part->getPositionY() < -visibleSize.height / 2 - origin.y)
 		road_upper_part->setPosition(Vec2(visibleSize.width / 2 + origin.x, 3 * visibleSize.height / 2 + origin.y));
 
+/*user_car with accelerometer*/
+user_car->setPosition(Vec2(user_car->getPositionX() + 10 * accInfo, user_car->getPositionY()));
+
 	/*œ–Œ–»—Œ¬ ¿ Ã¿ÿ»Õ*/
 	Vector<Node*> allNodes = this->getChildren();
 	for (auto& node : allNodes) {
@@ -157,7 +161,7 @@ void HelloWorld::update(float dt) {
 void HelloWorld::generateNewCar(float dt) {
 	auto nCar = Car::create();
 	this->addChild(nCar,100);
-//	CCLOG("Current Speed: %i", carSpeed);
+	CCLOG("Current Speed: %i", carSpeed);
 }
 
 void HelloWorld::menuCloseCallback(Ref* pSender)

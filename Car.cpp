@@ -56,7 +56,7 @@ Car::Car()
 		speed = this->defineSpeed(100, 60);
 	//	this->initWithSpriteFrameName("Black_viper.png");
 
-		this->initWithFile("cars/Police.png");
+		this->initWithSpriteFrameName("Police.png");
 
 		Vector<SpriteFrame*> animFrames;
 		animFrames.pushBack(spritecache->getSpriteFrameByName("Police1.png"));
@@ -92,14 +92,14 @@ Car::Car()
 Point Car::definePosition()
 {
 	int posX = 4 * CCRANDOM_0_1();
-	CCLOG("Car line position: %i", posX);
+//	CCLOG("Car line position: %i", posX);
 	return Point(LEFT_CAR_POSITION + ROAD_LINE_WIDTH * posX, RESOLUTION_Y);
 }
 
 int Car::defineSpeed(int minSpeed, int deltaSpeed)
 {
 	int speed = minSpeed + deltaSpeed * CCRANDOM_0_1();
-	CCLOG("%i", speed);
+//	CCLOG("%i", speed);
 	return speed;
 }
 

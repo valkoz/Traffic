@@ -1,7 +1,7 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 #include "Definitions.h"
-#include <iostream>
+//#include <iostream>
 
 USING_NS_CC;
 
@@ -62,7 +62,7 @@ bool HelloWorld::init()
 	road_upper_part->setPosition(Vec2(visibleSize.width / 2 + origin.x, 3 * visibleSize.height / 2 + origin.y));
 	this->addChild(road_upper_part);
 
-	user_car = Sprite::create("cars/taxi.png");
+	user_car = Sprite::create("cars/Taxi.png");
 	user_car->setPosition(Vec2(visibleSize.width - LEFT_CAR_POSITION, 150));
 	user_car->setName("user");
 	//user_car->setRotation(-90);
@@ -81,10 +81,10 @@ bool HelloWorld::init()
 
 void HelloWorld::onAcceleration(cocos2d::Acceleration *acc, cocos2d::Event *event)
 {
-	auto user_car = Sprite::create("car_red.png");
-	user_car->setPosition(0,0);
-	this->addChild(user_car, 1);
-	CCLOG("%f", acc->z);
+//	auto user_car = Sprite::create("car_red.png");
+//	user_car->setPosition(0,0);
+//	this->addChild(user_car, 1);
+//	CCLOG("%f", acc->z);
 }
 
 /*
@@ -100,7 +100,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event) {
 	Rect gasRect(0, 0, 200, 200);
 	Rect stopRect(800, 0, 200, 200);
 	if (gasRect.containsPoint(touchPoint)) {
-		CCLOG("GOOOOO");
+//		CCLOG("GOOOOO");
 		onTouch = gas;
 	}
 	if (stopRect.containsPoint(touchPoint))
@@ -157,7 +157,7 @@ void HelloWorld::update(float dt) {
 void HelloWorld::generateNewCar(float dt) {
 	auto nCar = Car::create();
 	this->addChild(nCar,100);
-	CCLOG("Current Speed: %i", carSpeed);
+//	CCLOG("Current Speed: %i", carSpeed);
 }
 
 void HelloWorld::menuCloseCallback(Ref* pSender)

@@ -62,10 +62,9 @@ bool HelloWorld::init()
 	road_upper_part->setPosition(Vec2(visibleSize.width / 2 + origin.x, 3 * visibleSize.height / 2 + origin.y));
 	this->addChild(road_upper_part);
 
-	user_car = Sprite::create("cars/car_red.png");
+	user_car = Sprite::create("cars/Mycar.png");
 	user_car->setPosition(Vec2(visibleSize.width - LEFT_CAR_POSITION, 150));
 	user_car->setName("user");
-	user_car->setRotation(-90);
 	this->addChild(user_car,1);
 
 	this->schedule(schedule_selector(HelloWorld::generateNewCar), 1.0f);

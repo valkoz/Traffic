@@ -84,8 +84,8 @@ bool HelloWorld::init()
 
 void HelloWorld::onAcceleration(cocos2d::Acceleration *acc, cocos2d::Event *event)
 {
-	accInfo = acc->y;
-	CCLOG("%f", acc->y);
+	accInfo = acc->x;
+	CCLOG("%f", acc->x);
 }
 
 /*
@@ -162,8 +162,10 @@ void HelloWorld::update(float dt) {
 			checkCarsNearWithUpdate(currentCar);
 
 			/*Collision Detection-> GAME OVER*/
-			if (currentCar->getBoundingBox().intersectsRect(user_car->getBoundingBox()))
-				Director::getInstance()->end();
+			if (currentCar->getBoundingBox().intersectsRect(user_car->getBoundingBox())){
+				auto scene = HelloWorld::createScene();
+				Director::getInstance()->replaceScene(TransitionFade::create(1.0f, scene));
+			}
 
 			/*Для обгона и влево и вправо (Так и не заработало)*/
 	/*			if (currentCar->getIsFront()) {  //isNearOvertakenCar(currentCar) // opt.getIsFront()

@@ -17,3 +17,8 @@ TO DO:
   - Animation
   - BackGround (black stripes)
   - Non-Linear player motion
+  - Android bar
+
+Modes:
+  - Nitro
+  - Two-dimensional movement

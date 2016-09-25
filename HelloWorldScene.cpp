@@ -70,6 +70,10 @@ bool HelloWorld::init()
 
 	this->schedule(schedule_selector(HelloWorld::generateNewCar), 1.0f);
 
+	this->schedule(schedule_selector(HelloWorld::logSpeedLastLine), 2.0f);
+
+//	this->schedule(schedule_selector(HelloWorld::checkCarsNear), 0.1f);
+
 	this->scheduleUpdate();
 	//user_car->runAction(seq);
 
@@ -81,11 +85,8 @@ bool HelloWorld::init()
 
 void HelloWorld::onAcceleration(cocos2d::Acceleration *acc, cocos2d::Event *event)
 {
-	accInfo = acc->x;
-//	auto user_car = Sprite::create("car_red.png");
-//	user_car->setPosition(0,0);
-//	this->addChild(user_car, 1);
-//	CCLOG("%f", acc->z);
+	accInfo = acc->y;
+	CCLOG("%f", acc->y);
 }
 
 /*
@@ -145,24 +146,210 @@ void HelloWorld::update(float dt) {
 	if (road_upper_part->getPositionY() < -visibleSize.height / 2 - origin.y)
 		road_upper_part->setPosition(Vec2(visibleSize.width / 2 + origin.x, 3 * visibleSize.height / 2 + origin.y));
 
-/*user_car with accelerometer*/
-user_car->setPosition(Vec2(user_car->getPositionX() + 10 * accInfo, user_car->getPositionY()));
+	/*user_car with accelerometer*/
+	user_car->setPosition(Vec2(user_car->getPositionX() + 10 * accInfo, user_car->getPositionY()));
 
-	/*ÏÐÎÐÈÑÎÂÊÀ ÌÀØÈÍ*/
+
+	/*ÏÐÎÐÈÑÎÂÊÀ ÌÀØÈÍ*/ /*+ ÈÍÒÅËËÅÊÒ ÌÀØÈÍ (ÂÎÇÌÎÆÍÎÑÒÜ ÎÁÎÃÍÀÒÜ)*/
+
+	/*if there are no cars in front of -> just move current, else make overtake (by moveng left and up) */
 	Vector<Node*> allNodes = this->getChildren();
 	for (auto& node : allNodes) {
 		if (dynamic_cast<Car*>(node)) {
-			Car *target = dynamic_cast<Car*>(node);
-			target->setPosition(Vec2(target->getPositionX() , target->getPositionY() - 0.1 * (carSpeed - target->getSpeed())));
+			Car *currentCar = dynamic_cast<Car*>(node);
+			removeCarFromLayer(currentCar);
+
+			//	if ((int(currentCar->getPositionY()) % ROAD_LINE_WIDTH) == LEFT_CAR_POSITION)
+			checkCarsNearWithUpdate(currentCar);
+
+			/*Collision Detection-> GAME OVER*/
+			if (currentCar->getBoundingBox().intersectsRect(user_car->getBoundingBox()))
+				Director::getInstance()->end();
+
+			/*Äëÿ îáãîíà è âëåâî è âïðàâî (Òàê è íå çàðàáîòàëî)*/
+	/*			if (currentCar->getIsFront()) {  //isNearOvertakenCar(currentCar) // opt.getIsFront()
+					if (!currentCar->getIsLeft()) //!isLeftCar(currentCar) //!opt.getIsLeft()
+						currentCar->moveToLeftLine(carSpeed);
+					else if (!currentCar->getIsRight()) { //!opt.getIsRight()
+						currentCar->moveToRightLine(carSpeed);
+					}
+					else { currentCar->decreaseSpeed(carSpeed); }
+				}
+				else { currentCar->increaseSpeed(carSpeed); }
+	*/
+
+	/*Äëÿ îáãîíà âëåâî */
+		/*	if (!currentCar->getActionByTag(1)) {
+			if (currentCar->getIsFront())
+			{
+				if (currentCar->getIsLeft())
+					currentCar->decreaseSpeed(carSpeed);
+				else
+					currentCar->moveToLeftLine(carSpeed);
+			}
+			else { currentCar->increaseSpeed(carSpeed); }
 		}
-	}
+		*/
+			/*Äëÿ îáãîíà âåçäå íàõóé  */
+			if (!currentCar->getActionByTag(1)) {
+				if (currentCar->getIsFront())
+				{
+					if (currentCar->getIsLeft()) {
+						if (currentCar->getIsRight())
+							currentCar->decreaseSpeed(carSpeed);
+						else {
+							if (currentCar->getPositionX() != LEFT_CAR_POSITION + 3 * ROAD_LINE_WIDTH)
+								currentCar->moveToRightLine(carSpeed);
+							else
+								currentCar->decreaseSpeed(carSpeed);
+						}
+					}
+					else {
+						if (currentCar->getPositionX() != LEFT_CAR_POSITION)
+							currentCar->moveToLeftLine(carSpeed);
+						else if (currentCar->getIsRight())
+							currentCar->decreaseSpeed(carSpeed);
+						else
+							currentCar->moveToRightLine(carSpeed);
+					}
+				}
+				else { currentCar->increaseSpeed(carSpeed); }
+			}
+
+
+
+		}
+	}	
 }
+
 
 void HelloWorld::generateNewCar(float dt) {
 	auto nCar = Car::create();
+//	Coordinate a;
+//	a.x = nCar->getPositionX();
+//	a.y = nCar->getPositionY();
+//	carPositions.push_back(a);
 	this->addChild(nCar,100);
-	CCLOG("Current Speed: %i", carSpeed);
+//	CCLOG("Current Speed: %i", carSpeed);
 }
+
+void HelloWorld::removeCarFromLayer(Car * current)
+{
+	if (current->getPositionY() < -200)
+		this->removeChild(current, true);
+	if (current->getPositionY() > 3000)
+		this->removeChild(current, true);
+}
+
+bool HelloWorld::isNearOvertakenCar(Car *current)
+{
+	Vector <Node*> fuckingFronts = this->getChildren();
+	for (auto& car : fuckingFronts) {
+		if (dynamic_cast<Car*>(car)) {
+			Car *currentCar = dynamic_cast<Car*>(car);
+			if(current->getPosition() != currentCar->getPosition())
+			if ((abs(current->getPositionX() - currentCar->getPositionX())< 150) && (abs(currentCar->getPositionY() - current->getPositionY()) < 400) && (currentCar->getPositionY() - current->getPositionY() > 0)) {
+				CCLOG("overtake!!!");
+				return true;
+			}
+
+		}
+	}
+	return false;
+}
+
+bool HelloWorld::isLeftCar(Car *current)
+{
+	Vector <Node*> fuckingFronts = this->getChildren();
+	for (auto& car : fuckingFronts) {
+		if (dynamic_cast<Car*>(car)) {
+			Car *currentCar = dynamic_cast<Car*>(car);
+			if (current->getPosition() != currentCar->getPosition())
+				if (((currentCar->getPositionX() - current->getPositionX()) > 150) && ((currentCar->getPositionX() - current->getPositionX()) < 300) && (abs(currentCar->getPositionY() - current->getPositionY()) < 300)) {
+					CCLOG("overtake!!!");
+					return true;
+				}
+
+		}
+	}
+	return false;
+}
+
+void HelloWorld::checkCarsNear(float dt)
+{
+/*	Vector<Node*> allNodes = this->getChildren();
+	for (auto& node : allNodes) {
+		if (dynamic_cast<Car*>(node)) {
+			Car *current = dynamic_cast<Car*>(node);
+			MoveOption opt = MoveOption(false, false, false);
+			Vector <Node*> fuckingFronts = this->getChildren();
+			for (auto& car : fuckingFronts) {
+				if (dynamic_cast<Car*>(car)) {
+					Car *nearbyCar = dynamic_cast<Car*>(car);
+					if (current->getPosition() != nearbyCar->getPosition()) {
+						if ((abs(current->getPositionX() - nearbyCar->getPositionX()) < ROAD_LINE_WIDTH) && (nearbyCar->getPositionY() - current->getPositionY() < 400) && (nearbyCar->getPositionY() - current->getPositionY() > 0)) {
+							//			CCLOG("Car in front of !!!");
+							if (nearbyCar->getSpeed() < current->getSpeed())
+								opt.setIsFront(true);
+						}
+						if ((nearbyCar->getPositionX() - current->getPositionX() ==  ROAD_LINE_WIDTH) && (abs(nearbyCar->getPositionY() - current->getPositionY()) < 300)) {
+							//		CCLOG("Car left");
+							opt.setIsLeft(true);
+						}
+						if ((current->getPositionX() - nearbyCar->getPositionX() == ROAD_LINE_WIDTH) && (abs(nearbyCar->getPositionY() - current->getPositionY()) < 300)) {
+							//		CCLOG("Car right!!!");
+							opt.setIsRight(true);
+						}
+					}
+				}
+				current->setMoveOption(opt.getIsFront(), opt.getIsLeft(), opt.getIsRight());
+			}
+		}
+	}*/
+}
+
+void HelloWorld::checkCarsNearWithUpdate(Car *current)
+{
+	MoveOption opt = MoveOption(false, false, false);
+	Vector <Node*> fuckingFronts = this->getChildren();
+	for (auto& car : fuckingFronts) {
+		if (dynamic_cast<Car*>(car)) {
+			Car *nearbyCar = dynamic_cast<Car*>(car);
+			if (current->getPosition() != nearbyCar->getPosition()) {
+				if ((current->getPositionX() == nearbyCar->getPositionX()) && (nearbyCar->getPositionY() - current->getPositionY() < 400) && (nearbyCar->getPositionY() - current->getPositionY() > 0)) {
+					//			CCLOG("Car in front of !!!");
+					if (nearbyCar->getSpeed() <= current->getSpeed())
+						opt.setIsFront(true);
+				}
+				if ((current->getPositionX() - nearbyCar->getPositionX() <= ROAD_LINE_WIDTH) && (current->getPositionX() - nearbyCar->getPositionX() > 0) && (abs(nearbyCar->getPositionY() - current->getPositionY()) < 600)) {
+					//		CCLOG("Car left");
+					opt.setIsLeft(true);
+				}
+				if ((nearbyCar->getPositionX() - current->getPositionX() <= ROAD_LINE_WIDTH) && (nearbyCar->getPositionX() - current->getPositionX() > 0 ) && (abs(nearbyCar->getPositionY() - current->getPositionY()) < 600)) {
+					//		CCLOG("Car right!!!");
+					opt.setIsRight(true);
+				}
+			}
+		}
+		current->setMoveOption(opt.getIsFront(), opt.getIsLeft(), opt.getIsRight());
+	}
+}
+
+void HelloWorld::logSpeedLastLine(float dt)
+{
+	Vector <Node*> fuckingFronts = this->getChildren();
+	for (auto& car : fuckingFronts) {
+		if (dynamic_cast<Car*>(car)) {
+			Car *nearbyCar = dynamic_cast<Car*>(car);
+			if (nearbyCar->getPositionX() > 500) {
+				CCLOG("Current Speed: %i", nearbyCar->getSpeed());
+			}
+		}
+	}
+	CCLOG("_____________________________________");
+}
+
+
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
@@ -180,3 +367,4 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     
     
 }
+

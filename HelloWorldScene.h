@@ -3,8 +3,14 @@
 
 #include "cocos2d.h"
 #include "Car.h"
+#include <vector>
 
 enum moveOption { brakes = -1, freeMovement, gas };
+
+struct Coordinate {
+	float x;
+	float y;
+};
 
 class HelloWorld : public cocos2d::Layer
 {
@@ -12,7 +18,9 @@ private:
 	cocos2d::Sprite *road;
 	cocos2d::Sprite *road_upper_part;
 	cocos2d::Sprite *user_car;
-	float accInfo = 1;
+	float accInfo = 0;
+//	std::vector<int>  carPositions[4];
+
 //	Car* nCar;
 
 	moveOption onTouch = freeMovement;
@@ -23,6 +31,15 @@ private:
 	void decreaseSpeed(float dt);
 
 	void generateNewCar(float dt);
+	void removeCarFromLayer(Car *current);
+	bool isNearOvertakenCar(Car*);
+	bool isLeftCar(Car*);
+
+	void checkCarsNear(float dt);
+
+	void checkCarsNearWithUpdate(Car *current);
+
+	void logSpeedLastLine(float dt);
 
 public:
     static cocos2d::Scene* createScene();

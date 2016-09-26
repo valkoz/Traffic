@@ -39,6 +39,8 @@ private:
 
 	void checkCarsNearWithUpdate(Car *current);
 
+	void checkCollisions(Car *currentCar);
+
 	void logSpeedLastLine(float dt);
 
 public:

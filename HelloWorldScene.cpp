@@ -64,6 +64,8 @@ bool HelloWorld::init()
 
 	user_car = Sprite::create("cars/Mycar.png");
 	user_car->setPosition(Vec2(visibleSize.width - LEFT_CAR_POSITION, 150));
+/*FOR TESTING*/
+//	user_car->setPosition(Vec2(500, 150));
 	user_car->setName("user");
 	this->addChild(user_car,1);
 
@@ -99,7 +101,7 @@ Black strips on background
 bool HelloWorld::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event) {
 	Point touchPoint(touch->getLocation().x, touch->getLocation().y);
 	Rect gasRect(0, 0, 200, 200);
-	Rect stopRect(800, 0, 200, 200);
+	Rect stopRect(600, 0, 200, 200);
 	if (gasRect.containsPoint(touchPoint)) {
 //		CCLOG("GOOOOO");
 		onTouch = gas;
@@ -131,9 +133,9 @@ void HelloWorld::update(float dt) {
 	/*нопедекъер онбедемхе юбрн 1 - цюг, -1 - рнплнг, 0 - ябнандмне дбхфемхе*/
 	if ((onTouch == gas) && (carSpeed < 200))
 		carSpeed += 1;
-	else if ((onTouch == brakes) && (carSpeed > MIN_SPEED))
+	/*else*/ if ((onTouch == brakes) && (carSpeed > MIN_SPEED))
 		carSpeed -= 3;
-	else if ((onTouch == freeMovement) && (carSpeed > MIN_SPEED))
+	/*else*/ if ((onTouch == freeMovement) && (carSpeed > MIN_SPEED))
 		carSpeed -= 1;
 	/*опнпхянбйю тнмю*/
 	auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -146,7 +148,9 @@ void HelloWorld::update(float dt) {
 		road_upper_part->setPosition(Vec2(visibleSize.width / 2 + origin.x, 3 * visibleSize.height / 2 + origin.y));
 
 	/*user_car with accelerometer*/
-	user_car->setPosition(Vec2(user_car->getPositionX() + 10 * accInfo, user_car->getPositionY()));
+	if ((user_car->getPositionX()  + (user_car->getBoundingBox().getMaxX() - user_car->getBoundingBox().getMinX())/2 > 720) || (user_car->getPositionX() - (user_car->getBoundingBox().getMaxX() - user_car->getBoundingBox().getMinX()) / 2 < 0)) { CCLOG("vibration"); }
+	else
+		user_car->setPosition(Vec2(user_car->getPositionX() + 20 * accInfo, user_car->getPositionY()));
 
 
 	/*опнпхянбйю люьхм*/ /*+ хмреккейр люьхм (бнглнфмнярэ нанцмюрэ)*/
@@ -162,10 +166,8 @@ void HelloWorld::update(float dt) {
 			checkCarsNearWithUpdate(currentCar);
 
 			/*Collision Detection-> GAME OVER*/
-			if (currentCar->getBoundingBox().intersectsRect(user_car->getBoundingBox())){
-				auto scene = HelloWorld::createScene();
-				Director::getInstance()->replaceScene(TransitionFade::create(1.0f, scene));
-			}
+			checkCollisions(currentCar);
+			
 
 			/*дКЪ НАЦНМЮ Х БКЕБН Х БОПЮБН (рЮЙ Х МЕ ГЮПЮАНРЮКН)*/
 	/*			if (currentCar->getIsFront()) {  //isNearOvertakenCar(currentCar) // opt.getIsFront()
@@ -333,6 +335,22 @@ void HelloWorld::checkCarsNearWithUpdate(Car *current)
 			}
 		}
 		current->setMoveOption(opt.getIsFront(), opt.getIsLeft(), opt.getIsRight());
+	}
+}
+
+void HelloWorld::checkCollisions(Car * currentCar)
+{
+	Rect a = user_car->getBoundingBox();
+	float minX = a.getMinX() + 5;
+	float maxX = a.getMaxX() - 5;
+	float minY = a.getMinY();
+	float maxY = a.getMaxY();
+	Rect *newRectangle = new Rect(minX, minY, maxX - minX, maxY - minY - 5);
+
+
+	if (currentCar->getBoundingBox().intersectsRect(*newRectangle)) {
+		auto scene = HelloWorld::createScene();
+		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, scene));
 	}
 }
 

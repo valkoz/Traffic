@@ -14,7 +14,7 @@ TO DO:
   - Bots must pay attention on Player while overtaking
   - Player should not go out of the road
   - Gas and brakes buttons with pictures
-  - Problem with adding new Car on the old one (collision)
+  - <i>Problem with adding new Car on the old one (collision)</i> NO TESTS
   - Point of overtaking (speed of user and currentCar)
   - <i>Animation + </i>
   - BackGround (black stripes)

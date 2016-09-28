@@ -18,7 +18,9 @@ private:
 	cocos2d::Sprite *road;
 	cocos2d::Sprite *road_upper_part;
 	cocos2d::Sprite *user_car;
-	float accInfo = 0;
+
+	//float accInfo = 0;
+	std::vector <double> accInfo;
 //	std::vector<int>  carPositions[4];
 
 //	Car* nCar;
@@ -42,6 +44,8 @@ private:
 	void checkCollisions(Car *currentCar);
 
 	void logSpeedLastLine(float dt);
+
+	double returnAccRatio();
 
 public:
     static cocos2d::Scene* createScene();

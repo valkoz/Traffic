@@ -1,6 +1,7 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 #include "Definitions.h"
+#include <vector>
 //#include <iostream>
 
 USING_NS_CC;
@@ -86,9 +87,13 @@ bool HelloWorld::init()
 
 void HelloWorld::onAcceleration(cocos2d::Acceleration *acc, cocos2d::Event *event)
 {
-	accInfo = acc->x;
+	//accInfo = acc->x;
+	accInfo.push_back(acc->x);
+	if (accInfo.size() > 5)
+		accInfo.pop_back();
 	CCLOG("%f", acc->x);
 }
+
 
 /*
 onTouchBegan works only one time but must work permanent for acceleration wtf?!
@@ -149,8 +154,11 @@ void HelloWorld::update(float dt) {
 
 	/*user_car with accelerometer*/
 	if ((user_car->getPositionX()  + (user_car->getBoundingBox().getMaxX() - user_car->getBoundingBox().getMinX())/2 > 720) || (user_car->getPositionX() - (user_car->getBoundingBox().getMaxX() - user_car->getBoundingBox().getMinX()) / 2 < 0)) { CCLOG("vibration"); }
-	else
-		user_car->setPosition(Vec2(user_car->getPositionX() + 20 * accInfo, user_car->getPositionY()));
+	else {
+		double res = this->returnAccRatio();
+		user_car->setPosition(Vec2(user_car->getPositionX() + 20 * res, user_car->getPositionY()));
+
+	}
 
 
 	/*œ–Œ–»—Œ¬ ¿ Ã¿ÿ»Õ*/ /*+ »Õ“≈ÀÀ≈ “ Ã¿ÿ»Õ (¬Œ«ÃŒ∆ÕŒ—“‹ Œ¡Œ√Õ¿“‹)*/
@@ -366,6 +374,14 @@ void HelloWorld::logSpeedLastLine(float dt)
 		}
 	}
 	CCLOG("_____________________________________");
+}
+
+double HelloWorld::returnAccRatio()
+{
+	double res = 0;
+	for (auto i : accInfo) // access by value, the type of i is int
+		res = res + (5 - i) * accInfo[i];
+	return res;
 }
 
 

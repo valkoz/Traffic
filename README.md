@@ -11,7 +11,7 @@ Also:
 TO DO:
 
   - Collision must be detected more accurately
-  - Bots must pay attention on Player while overtaking
+  - <i>Bots must pay attention on Player while overtaking</i> NO TESTS
   - Player should not go out of the road
   - Gas and brakes buttons with pictures
   - <i>Problem with adding new Car on the old one (collision)</i> NO TESTS

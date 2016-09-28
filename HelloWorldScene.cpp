@@ -81,7 +81,7 @@ bool HelloWorld::init()
 
     // add the sprite as a child to this layer
    // this->addChild(sprite, 0);
-    
+for (int i = 0; i < 50; i++){    accInfo.push_back(0); }
     return true;
 }
 
@@ -89,8 +89,8 @@ void HelloWorld::onAcceleration(cocos2d::Acceleration *acc, cocos2d::Event *even
 {
 	//accInfo = acc->x;
 	accInfo.push_back(acc->x);
-	if (accInfo.size() > 5)
-		accInfo.pop_back();
+	if (accInfo.size() > 50)
+		accInfo.erase(accInfo.begin() + 1);
 	CCLOG("%f", acc->x);
 }
 
@@ -156,7 +156,10 @@ void HelloWorld::update(float dt) {
 	if ((user_car->getPositionX()  + (user_car->getBoundingBox().getMaxX() - user_car->getBoundingBox().getMinX())/2 > 720) || (user_car->getPositionX() - (user_car->getBoundingBox().getMaxX() - user_car->getBoundingBox().getMinX()) / 2 < 0)) { CCLOG("vibration"); }
 	else {
 		double res = this->returnAccRatio();
-		user_car->setPosition(Vec2(user_car->getPositionX() + 20 * res, user_car->getPositionY()));
+		//auto rotateBy = RotateBy::create(0.001, 20 * res);
+		user_car->setRotation(2 * res);
+		user_car->setPosition(Vec2(user_car->getPositionX() + res, user_car->getPositionY()));
+		//user_car->runAction(rotateBy);
 
 	}
 
@@ -349,8 +352,8 @@ void HelloWorld::checkCarsNearWithUpdate(Car *current)
 void HelloWorld::checkCollisions(Car * currentCar)
 {
 	Rect a = user_car->getBoundingBox();
-	float minX = a.getMinX() + 5;
-	float maxX = a.getMaxX() - 5;
+	float minX = a.getMinX() + 15;
+	float maxX = a.getMaxX() - 15;
 	float minY = a.getMinY();
 	float maxY = a.getMaxY();
 	Rect *newRectangle = new Rect(minX, minY, maxX - minX, maxY - minY - 5);
@@ -380,7 +383,7 @@ double HelloWorld::returnAccRatio()
 {
 	double res = 0;
 	for (auto i : accInfo) // access by value, the type of i is int
-		res = res + (5 - i) * accInfo[i];
+		res = res + 0.3 * (i+1) * accInfo[50 - i];
 	return res;
 }
 

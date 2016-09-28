@@ -238,7 +238,7 @@ void HelloWorld::overtake(Car * currentCar)
 
 bool HelloWorld::checkDistanceBetweenPlayerAndCar(Car * currentCar)
 {
-	if ((abs(user_car->getPositionX() - currentCar->getPositionX()) < ROAD_LINE_WIDTH)&&(abs(user_car->getPositionY() - currentCar->getPositionY()) < 400))
+	if ((abs(user_car->getPositionX() - currentCar->getPositionX()) < 3 * ROAD_LINE_WIDTH / 2)&&(abs(user_car->getPositionY() - currentCar->getPositionY()) < 400))
 		return false;
 	else
 		return true;

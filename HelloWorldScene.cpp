@@ -205,30 +205,40 @@ void HelloWorld::checkCollisionsWithPlayer(Car * currentCar)
 /*Checks if overtake is nessesry and making an overtake*/
 void HelloWorld::overtake(Car * currentCar)
 {
-	if (!currentCar->getActionByTag(1)) {
-		if (currentCar->getIsFront())
-		{
-			if (currentCar->getIsLeft()) {
-				if (currentCar->getIsRight())
-					currentCar->decreaseSpeed(carSpeed);
-				else {
-					if (currentCar->getPositionX() != LEFT_CAR_POSITION + 3 * ROAD_LINE_WIDTH)
-						currentCar->moveToRightLine(carSpeed);
-					else
+	if (this->checkDistanceBetweenPlayerAndCar(currentCar)) {
+		if (!currentCar->getActionByTag(1)) {
+			if (currentCar->getIsFront())
+			{
+				if (currentCar->getIsLeft()) {
+					if (currentCar->getIsRight())
 						currentCar->decreaseSpeed(carSpeed);
+					else {
+						if (currentCar->getPositionX() != LEFT_CAR_POSITION + 3 * ROAD_LINE_WIDTH)
+							currentCar->moveToRightLine(carSpeed);
+						else
+							currentCar->decreaseSpeed(carSpeed);
+					}
+				}
+				else {
+					if (currentCar->getPositionX() != LEFT_CAR_POSITION)
+						currentCar->moveToLeftLine(carSpeed);
+					else if (currentCar->getIsRight())
+						currentCar->decreaseSpeed(carSpeed);
+					else
+						currentCar->moveToRightLine(carSpeed);
 				}
 			}
-			else {
-				if (currentCar->getPositionX() != LEFT_CAR_POSITION)
-					currentCar->moveToLeftLine(carSpeed);
-				else if (currentCar->getIsRight())
-					currentCar->decreaseSpeed(carSpeed);
-				else
-					currentCar->moveToRightLine(carSpeed);
-			}
+			else { currentCar->increaseSpeed(carSpeed); }
 		}
-		else { currentCar->increaseSpeed(carSpeed); }
 	}
+}
+
+bool HelloWorld::checkDistanceBetweenPlayerAndCar(Car * currentCar)
+{
+	if ((abs(user_car->getPositionX() - currentCar->getPositionX()) > ROAD_LINE_WIDTH))
+		return true;
+	else
+		return false;
 }
 
 /*Returns value of accelerometer coefficient*/

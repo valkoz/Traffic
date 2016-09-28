@@ -34,6 +34,8 @@ private:
 
 	void overtake(Car *currentCar);
 
+	bool checkDistanceBetweenPlayerAndCar(Car *currentCar);
+
 	double returnAccRatio();
 
 	void changeSpeed();

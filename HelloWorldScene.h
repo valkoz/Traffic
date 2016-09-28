@@ -30,7 +30,7 @@ private:
 
 	void checkCarsNearWithUpdate(Car *current);
 
-	void checkCollisions(Car *currentCar);
+	void checkCollisionsWithPlayer(Car *currentCar);
 
 	void overtake(Car *currentCar);
 

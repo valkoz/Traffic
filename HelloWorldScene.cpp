@@ -119,7 +119,7 @@ void HelloWorld::update(float dt) {
 			Car *currentCar = dynamic_cast<Car*>(node);
 			this->removeCarFromLayer(currentCar);
 			this->checkCarsNearWithUpdate(currentCar);
-			this->checkCollisions(currentCar);
+			this->checkCollisionsWithPlayer(currentCar);
 			this->overtake(currentCar);
 		}
 	}	
@@ -162,16 +162,22 @@ void HelloWorld::checkCarsNearWithUpdate(Car *current)
 	for (auto& car : fuckingFronts) {
 		if (dynamic_cast<Car*>(car)) {
 			Car *nearbyCar = dynamic_cast<Car*>(car);
-			if (current->getPosition() != nearbyCar->getPosition()) {
-				if ((current->getPositionX() == nearbyCar->getPositionX()) && (nearbyCar->getPositionY() - current->getPositionY() < 400) && (nearbyCar->getPositionY() - current->getPositionY() > 0)) {
-					if (nearbyCar->getSpeed() <= current->getSpeed())
-						opt.setIsFront(true);
-				}
-				if ((current->getPositionX() - nearbyCar->getPositionX() <= ROAD_LINE_WIDTH) && (current->getPositionX() - nearbyCar->getPositionX() > 0) && (abs(nearbyCar->getPositionY() - current->getPositionY()) < 600)) {
-					opt.setIsLeft(true);
-				}
-				if ((nearbyCar->getPositionX() - current->getPositionX() <= ROAD_LINE_WIDTH) && (nearbyCar->getPositionX() - current->getPositionX() > 0 ) && (abs(nearbyCar->getPositionY() - current->getPositionY()) < 600)) {
-					opt.setIsRight(true);
+			/*ÊÎÑÒÛËÜ*/
+			if ((nearbyCar->getBoundingBox().intersectsRect(current->getBoundingBox())&&(nearbyCar != current))) {
+				this->removeChild(nearbyCar, true);
+			}
+			else {
+				if (current->getPosition() != nearbyCar->getPosition()) {
+					if ((current->getPositionX() == nearbyCar->getPositionX()) && (nearbyCar->getPositionY() - current->getPositionY() < 400) && (nearbyCar->getPositionY() - current->getPositionY() > 0)) {
+						if (nearbyCar->getSpeed() <= current->getSpeed())
+							opt.setIsFront(true);
+					}
+					if ((current->getPositionX() - nearbyCar->getPositionX() <= ROAD_LINE_WIDTH) && (current->getPositionX() - nearbyCar->getPositionX() > 0) && (abs(nearbyCar->getPositionY() - current->getPositionY()) < 600)) {
+						opt.setIsLeft(true);
+					}
+					if ((nearbyCar->getPositionX() - current->getPositionX() <= ROAD_LINE_WIDTH) && (nearbyCar->getPositionX() - current->getPositionX() > 0) && (abs(nearbyCar->getPositionY() - current->getPositionY()) < 600)) {
+						opt.setIsRight(true);
+					}
 				}
 			}
 		}
@@ -180,7 +186,7 @@ void HelloWorld::checkCarsNearWithUpdate(Car *current)
 }
 
 /*Collision Detection-> GAME OVER*/
-void HelloWorld::checkCollisions(Car * currentCar)
+void HelloWorld::checkCollisionsWithPlayer(Car * currentCar)
 {
 	Rect a = user_car->getBoundingBox();
 	float minX = a.getMinX() + 15;

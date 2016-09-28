@@ -163,7 +163,7 @@ void HelloWorld::checkCarsNearWithUpdate(Car *current)
 		if (dynamic_cast<Car*>(car)) {
 			Car *nearbyCar = dynamic_cast<Car*>(car);
 			/*ÊÎÑÒÛËÜ*/
-			if ((nearbyCar->getBoundingBox().intersectsRect(current->getBoundingBox())&&(nearbyCar != current))) {
+			if ((nearbyCar->getBoundingBox().intersectsRect(current->getBoundingBox())&&(nearbyCar != current)&&(nearbyCar->getPositionX() == current->getPositionX()))) {
 				this->removeChild(nearbyCar, true);
 			}
 			else {
@@ -205,10 +205,12 @@ void HelloWorld::checkCollisionsWithPlayer(Car * currentCar)
 /*Checks if overtake is nessesry and making an overtake*/
 void HelloWorld::overtake(Car * currentCar)
 {
-	if (this->checkDistanceBetweenPlayerAndCar(currentCar)) {
+	bool noUserNear = this->checkDistanceBetweenPlayerAndCar(currentCar);
+
 		if (!currentCar->getActionByTag(1)) {
 			if (currentCar->getIsFront())
 			{
+				if (noUserNear){
 				if (currentCar->getIsLeft()) {
 					if (currentCar->getIsRight())
 						currentCar->decreaseSpeed(carSpeed);
@@ -228,17 +230,18 @@ void HelloWorld::overtake(Car * currentCar)
 						currentCar->moveToRightLine(carSpeed);
 				}
 			}
+				else { currentCar->decreaseSpeed(carSpeed); }
+			}
 			else { currentCar->increaseSpeed(carSpeed); }
 		}
-	}
 }
 
 bool HelloWorld::checkDistanceBetweenPlayerAndCar(Car * currentCar)
 {
-	if ((abs(user_car->getPositionX() - currentCar->getPositionX()) > ROAD_LINE_WIDTH))
-		return true;
-	else
+	if ((abs(user_car->getPositionX() - currentCar->getPositionX()) < ROAD_LINE_WIDTH)&&(abs(user_car->getPositionY() - currentCar->getPositionY()) < 400))
 		return false;
+	else
+		return true;
 }
 
 /*Returns value of accelerometer coefficient*/

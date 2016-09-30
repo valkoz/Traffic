@@ -104,11 +104,20 @@ void HelloWorld::update(float dt) {
 	
 
 	/*user_car with accelerometer*/
-	if ((user_car->getPositionX()  + (user_car->getBoundingBox().getMaxX() - user_car->getBoundingBox().getMinX())/2 > 720) || (user_car->getPositionX() - (user_car->getBoundingBox().getMaxX() - user_car->getBoundingBox().getMinX()) / 2 < 0)) { CCLOG("vibration"); }
-	else {
+	bool rightCarBoundary = user_car->getBoundingBox().getMaxX() > 720;
+	bool leftCarBoundary = user_car->getBoundingBox().getMinX() < 0;
+			
+	if((!leftCarBoundary)&&(!rightCarBoundary)) {
 		double res = this->returnAccRatio();
 		user_car->setRotation(2 * res);
 		user_car->setPosition(Vec2(user_car->getPositionX() + res, user_car->getPositionY()));
+	}
+	else{
+		Device::vibrate(0.1f);
+		if (leftCarBoundary)
+			user_car->setPositionX(user_car->getBoundingBox().getMidX() + 1);
+		if (rightCarBoundary)
+			user_car->setPositionX(user_car->getBoundingBox().getMidX() - 1);
 	}
 
 

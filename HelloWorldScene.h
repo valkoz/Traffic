@@ -13,6 +13,8 @@ private:
 	cocos2d::Sprite *road;
 	cocos2d::Sprite *road_upper_part;
 	cocos2d::Sprite *user_car;
+	cocos2d::Sprite *gasButton;
+	cocos2d::Sprite *brakesButton;
 
 	std::vector <double> accInfo;
 

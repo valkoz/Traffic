@@ -50,11 +50,31 @@ bool HelloWorld::init()
 	road_upper_part->setPosition(Vec2(visibleSize.width / 2 + origin.x, 3 * visibleSize.height / 2 + origin.y));
 	this->addChild(road_upper_part);
 
+	//*new* 
+	/*
+	*GAS AND BREKES Button DEFINITION
+	*/
+	gasButton = Sprite::create("gas_wait.png");
+	gasButton->setPosition(650, 80);
+	this->addChild(gasButton, 1000);
+
+	brakesButton = Sprite::create("brakes_wait.png");
+	brakesButton->setPosition(100, 80);
+	this->addChild(brakesButton, 1001);
+
+	gasButton->setScale(0.5);
+	brakesButton->setScale(0.5);
+	gasButton->setOpacity(150);
+	brakesButton->setOpacity(150);
+
+
+	/**/
+
 	user_car = Sprite::create("cars/Mycar.png");
 	user_car->setPosition(Vec2(visibleSize.width - LEFT_CAR_POSITION, 150));
 
 	user_car->setName("user");
-	this->addChild(user_car,1);
+	this->addChild(user_car, 1);
 
 	this->schedule(schedule_selector(HelloWorld::generateNewCar), 1.0f);
 
@@ -79,18 +99,25 @@ void HelloWorld::onAcceleration(cocos2d::Acceleration *acc, cocos2d::Event *even
 
 bool HelloWorld::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event) {
 	Point touchPoint(touch->getLocation().x, touch->getLocation().y);
-	Rect gasRect(0, 0, 200, 200);
-	Rect stopRect(600, 0, 200, 200);
-	if (gasRect.containsPoint(touchPoint)) {
+	//Rect gasRect(0, 0, 200, 200);
+	//Rect stopRect(600, 0, 200, 200);
+
+	if (gasButton->getBoundingBox().containsPoint(touchPoint)) { //gasRect
 		onTouch = gas;
+		gasButton->setTexture("gas_enabled.png");
 	}
-	if (stopRect.containsPoint(touchPoint))
+	if (brakesButton->getBoundingBox().containsPoint(touchPoint)) { //stopRect
 		onTouch = brakes;
+		brakesButton->setTexture("brakes_enabled.png");
+
+	}
 	return true;
 }
 
 void HelloWorld::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *event) {
 	onTouch = freeMovement;
+	gasButton->setTexture("gas_wait.png");
+	brakesButton->setTexture("brakes_wait.png");
 	return;
 }
 
@@ -104,20 +131,16 @@ void HelloWorld::update(float dt) {
 	
 
 	/*user_car with accelerometer*/
-	bool rightCarBoundary = user_car->getBoundingBox().getMaxX() > 720;
-	bool leftCarBoundary = user_car->getBoundingBox().getMinX() < 0;
-			
-	if((!leftCarBoundary)&&(!rightCarBoundary)) {
+	if ((user_car->getPositionX()  + (user_car->getBoundingBox().getMaxX() - user_car->getBoundingBox().getMinX())/2 > 720) || (user_car->getPositionX() - (user_car->getBoundingBox().getMaxX() - user_car->getBoundingBox().getMinX()) / 2 < 0)) { 
+		Device::vibrate(0.2f);
+		user_car->setPositionX(user_car->getPositionX() - 1);
+		user_car->setPositionX(user_car->getBoundingBox().getMidX());
+		CCLOG("vibration");
+	}
+	else {
 		double res = this->returnAccRatio();
 		user_car->setRotation(2 * res);
 		user_car->setPosition(Vec2(user_car->getPositionX() + res, user_car->getPositionY()));
-	}
-	else{
-		Device::vibrate(0.1f);
-		if (leftCarBoundary)
-			user_car->setPositionX(user_car->getBoundingBox().getMidX() + 1);
-		if (rightCarBoundary)
-			user_car->setPositionX(user_car->getBoundingBox().getMidX() - 1);
 	}
 
 
@@ -171,7 +194,7 @@ void HelloWorld::checkCarsNearWithUpdate(Car *current)
 	for (auto& car : fuckingFronts) {
 		if (dynamic_cast<Car*>(car)) {
 			Car *nearbyCar = dynamic_cast<Car*>(car);
-			/*КОСТЫЛЬ*/
+			/*КОСТЫЛЬ - решение проблем с накладкой машин*/
 			if ((nearbyCar->getBoundingBox().intersectsRect(current->getBoundingBox())&&(nearbyCar != current)&&(nearbyCar->getPositionX() == current->getPositionX()))) {
 				this->removeChild(nearbyCar, true);
 			}

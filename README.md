@@ -18,6 +18,7 @@ Graphics:
   - Sounds (crash, emergency)
   - Android bar
   - Multi-resolution
+  - Multitouch for gas and brakes
   
 Game Logic:
   - Number of cars of current type, their positioning (trucks left, police right)

@@ -7,6 +7,7 @@ Physics:
   - Collision detection system
   - Overtaking logic (Point of overtaking, bot overtaking when user_car nearby algorithm, 1.5*WIDTH_LINE change to 1.7-2)
   - Overtaking to one line bots (BUG)
+  - Distance passed calculating
   
 Graphics:
   - Animation fix police car

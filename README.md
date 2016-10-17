@@ -14,6 +14,8 @@ Graphics:
   - Position of buttons
   - Stop and change line signals
   - Sounds (crash, emergency)
+  - Android bar
+  - Multi-resolution
   
 Game Logic:
   - Number of cars of current type, their positioning (trucks left, police right)

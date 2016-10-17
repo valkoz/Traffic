@@ -24,6 +24,6 @@ Design:
   - Layers (Main menu -> Choose game mode-> Game Layers (with scores) -> Game over layer
   - Game mode : coins for a minute
   - Game mode : one linear motion
-  - Game mode : ?
+  - Game mode : emergency mission (distance for some time -> to save live:))
   - Nitro
   - Faster Game

@@ -71,7 +71,7 @@ bool HelloWorld::init()
 	/**/
 
 	user_car = Sprite::create("cars/Mycar.png");
-	user_car->setPosition(Vec2(visibleSize.width - LEFT_CAR_POSITION, 150));
+	user_car->setPosition(Vec2(visibleSize.width - 2.3 * LEFT_CAR_POSITION, 150));
 
 	user_car->setName("user");
 	this->addChild(user_car, 1);

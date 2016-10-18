@@ -76,7 +76,7 @@ bool HelloWorld::init()
 	user_car->setName("user");
 	this->addChild(user_car, 1);
 
-	this->schedule(schedule_selector(HelloWorld::generateNewCar), 1.0f);
+	this->schedule(schedule_selector(HelloWorld::generateNewCar), 0.8f);
 
 	this->scheduleUpdate();
 	
@@ -175,8 +175,14 @@ void HelloWorld::renderBackground()
 
 /* Generate new Car and set it on layer*/
 void HelloWorld::generateNewCar(float dt) {
-	auto nCar = Car::create();
-	this->addChild(nCar,100);
+	if (this->getChildrenCount() < 10) {
+		auto nCar = Car::create();
+		this->addChild(nCar, 100);
+		CCLOG("ADD NEW CAR");
+	}
+	else {
+		CCLOG("TOO MUCH CARS");
+	}
 }
 
 /*Removes Car *current from layer */

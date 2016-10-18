@@ -76,7 +76,7 @@ bool HelloWorld::init()
 	user_car->setName("user");
 	this->addChild(user_car, 1);
 
-	this->schedule(schedule_selector(HelloWorld::generateNewCar), 0.8f);
+	this->schedule(schedule_selector(HelloWorld::generateNewCar), 0.5f);
 
 	this->scheduleUpdate();
 	
@@ -237,10 +237,10 @@ void HelloWorld::checkCollisionsWithPlayer(Car * currentCar)
 	Rect *newRectangle = new Rect(minX, minY, maxX - minX, maxY - minY - 5);
 
 
-	/*if (currentCar->getBoundingBox().intersectsRect(*newRectangle)) {
+	if (currentCar->getBoundingBox().intersectsRect(*newRectangle)) {
 		auto scene = HelloWorld::createScene();
 		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, scene));
-	}*/
+	}
 }
 
 /*Checks if overtake is nessesry and making an overtake*/

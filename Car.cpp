@@ -122,7 +122,7 @@ void Car::define(CarType type) {
 	switch (type) {
 	case Ambulance:
 	{
-		speed = this->setSpeed(100, 20);
+		speed = this->setSpeed(120, 60);
 		this->initWithSpriteFrameName("Ambulance.png");
 		this->setPosition(Point(LEFT_CAR_POSITION + ROAD_LINE_WIDTH * int(2 * CCRANDOM_0_1()), 3 * RESOLUTION_Y / 2));
 		Vector<SpriteFrame*> animFrames;

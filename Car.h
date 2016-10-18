@@ -41,9 +41,9 @@ private:
 
 	virtual bool init() { return true; };
 
-	Point definePosition();
+	int setSpeed(int minSpeed, int deltaSpeed);
 
-	int defineSpeed(int minSpeed, int deltaSpeed);
+	void define(CarType type);
 
 public:
 
@@ -52,6 +52,8 @@ public:
 	void modifySpeed(int sp);
 
 	int getSpeed();
+
+	int getType();
 
 	int getDefaultSpeed();
 

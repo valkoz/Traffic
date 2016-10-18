@@ -231,10 +231,10 @@ void HelloWorld::checkCollisionsWithPlayer(Car * currentCar)
 	Rect *newRectangle = new Rect(minX, minY, maxX - minX, maxY - minY - 5);
 
 
-	if (currentCar->getBoundingBox().intersectsRect(*newRectangle)) {
+	/*if (currentCar->getBoundingBox().intersectsRect(*newRectangle)) {
 		auto scene = HelloWorld::createScene();
 		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, scene));
-	}
+	}*/
 }
 
 /*Checks if overtake is nessesry and making an overtake*/
@@ -291,7 +291,7 @@ double HelloWorld::returnAccRatio()
 /*Making player's car to move faster or slower */
 void HelloWorld::changeSpeed()
 {
-	if ((onTouch == gas) && (carSpeed < 200))
+	if ((onTouch == gas) && (carSpeed < MAX_SPEED))
 		carSpeed += 1;
 	if ((onTouch == brakes) && (carSpeed > MIN_SPEED))
 		carSpeed -= 3;

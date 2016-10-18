@@ -2,7 +2,7 @@
 
 USING_NS_CC;
 
-Car::Car()
+/*Car::Car()
 {
 	int current_type = 8 * CCRANDOM_0_1();
 	auto spritecache = SpriteFrameCache::getInstance();
@@ -14,7 +14,7 @@ Car::Car()
 		type = Ambulance;
 		speed = this->defineSpeed(100, 20);
 		this->initWithSpriteFrameName("Ambulance.png");
-
+		this->setPosition(this->definePosition(Ambulance));
 		Vector<SpriteFrame*> animFrames;
 		animFrames.pushBack(spritecache->getSpriteFrameByName("Ambulance1.png"));
 		animFrames.pushBack(spritecache->getSpriteFrameByName("Ambulance2.png"));
@@ -27,12 +27,13 @@ Car::Car()
 		type = Black_viper;
 		speed = this->defineSpeed(120, 30);
 		this->initWithSpriteFrameName("Black_viper.png");
-		//this->initWithFile("cars/Black_viper.png");
+		this->setPosition(this->definePosition(Black_viper));
 		break;
 	case 2:
 		type = Orange_car;
 		speed = this->defineSpeed(70, 30);
 		this->initWithSpriteFrameName("Car.png");
+		this->setPosition(this->definePosition(Orange_car));
 
 		//		this->initWithFile("cars/Car.png");
 		break;
@@ -40,6 +41,7 @@ Car::Car()
 		type = Mini_truck;
 		speed = this->defineSpeed(50, 10);
 		this->initWithSpriteFrameName("Mini_truck.png");
+		this->setPosition(this->definePosition(Mini_truck));
 
 		//	this->initWithFile("cars/Mini_truck.png");
 		break;
@@ -47,6 +49,7 @@ Car::Car()
 		type = Mini_van;
 		speed = this->defineSpeed(60, 20);
 		this->initWithSpriteFrameName("Mini_van.png");
+		this->setPosition(this->definePosition(Mini_van));
 
 		//		this->initWithFile("cars/Mini_van.png");
 		break;
@@ -57,6 +60,7 @@ Car::Car()
 		//	this->initWithSpriteFrameName("Black_viper.png");
 
 		this->initWithSpriteFrameName("Police.png");
+		this->setPosition(this->definePosition(Police));
 
 		Vector<SpriteFrame*> animFrames;
 		animFrames.pushBack(spritecache->getSpriteFrameByName("Police1.png"));
@@ -70,6 +74,7 @@ Car::Car()
 		type = Taxi;
 		speed = this->defineSpeed(60, 40);
 		this->initWithSpriteFrameName("Taxi.png");
+		this->setPosition(this->definePosition(Taxi));
 
 		//	this->initWithFile("cars/Taxi.png");
 		break;
@@ -77,6 +82,7 @@ Car::Car()
 		type = Truck;
 		speed = this->defineSpeed(40, 40);
 		this->initWithSpriteFrameName("Truck.png");
+		this->setPosition(this->definePosition(Truck));
 
 		//	this->initWithFile("cars/Truck.png");
 		break;
@@ -84,24 +90,105 @@ Car::Car()
 		type = Orange_car;
 		speed = this->defineSpeed(70, 30);
 		this->initWithSpriteFrameName("Car.png");
+		this->setPosition(this->definePosition(Orange_car));
+
 		break;
 	}
-	this->setPosition(this->definePosition());
+}
+*/
+Car::Car() {
+	int current_type = 20 * CCRANDOM_0_1();
+	if (current_type < 4)
+		type = Orange_car;
+	else if (current_type < 8)
+		type = Taxi;
+	else if (current_type < 11)
+		type = Black_viper;
+	else if (current_type < 14)
+		type = Mini_van;
+	else if (current_type < 16)
+		type = Mini_truck;
+	else if (current_type < 17)
+		type = Truck;
+	else if (current_type < 19)
+		type = Ambulance;
+	else type = Police;
+	this->define(type);
 }
 
-Point Car::definePosition()
-{
-	int posX = 4 * CCRANDOM_0_1();
-	currentLine = posX;
-	//	CCLOG("Car line position: %i", posX);
-	return Point(LEFT_CAR_POSITION + ROAD_LINE_WIDTH * posX, 3 * RESOLUTION_Y / 2);  
+void Car::define(CarType type) {
+	auto spritecache = SpriteFrameCache::getInstance();
+	spritecache->addSpriteFramesWithFile("cars/Cars_sheet.plist");
+	switch (type) {
+	case Ambulance:
+	{
+		speed = this->setSpeed(100, 20);
+		this->initWithSpriteFrameName("Ambulance.png");
+		this->setPosition(Point(LEFT_CAR_POSITION + ROAD_LINE_WIDTH * int(2 * CCRANDOM_0_1()), 3 * RESOLUTION_Y / 2));
+		Vector<SpriteFrame*> animFrames;
+		animFrames.pushBack(spritecache->getSpriteFrameByName("Ambulance1.png"));
+		animFrames.pushBack(spritecache->getSpriteFrameByName("Ambulance2.png"));
+		animFrames.pushBack(spritecache->getSpriteFrameByName("Ambulance3.png"));
+		auto animation = Animation::createWithSpriteFrames(animFrames, 0.5f);
+		this->runAction(RepeatForever::create(Animate::create(animation)));
+		break;
+	}
+	case Black_viper:
+		speed = this->setSpeed(140, 60);
+		this->initWithSpriteFrameName("Black_viper.png");
+		this->setPosition(Point(LEFT_CAR_POSITION + ROAD_LINE_WIDTH * int(2 * CCRANDOM_0_1()), 3 * RESOLUTION_Y / 2));
+		break;
+	case Orange_car:
+		speed = this->setSpeed(100, 40);
+		this->initWithSpriteFrameName("Car.png");
+		this->setPosition(Point(LEFT_CAR_POSITION + ROAD_LINE_WIDTH * int(4 * CCRANDOM_0_1()), 3 * RESOLUTION_Y / 2));
+		break;
+	case Mini_truck:
+		speed = this->setSpeed(70, 30);
+		this->initWithSpriteFrameName("Mini_truck.png");
+		this->setPosition(Point(LEFT_CAR_POSITION + ROAD_LINE_WIDTH * 2 + ROAD_LINE_WIDTH * int(2 * CCRANDOM_0_1()), 3 * RESOLUTION_Y / 2));
+		break;
+	case Mini_van:
+		speed = this->setSpeed(80, 20);
+		this->initWithSpriteFrameName("Mini_van.png");
+		this->setPosition(Point(LEFT_CAR_POSITION + ROAD_LINE_WIDTH * 2 + ROAD_LINE_WIDTH * int(2 * CCRANDOM_0_1()), 3 * RESOLUTION_Y / 2));
+		break;
+	case Police:
+	{
+		speed = this->setSpeed(120, 60);
+		
+		this->initWithSpriteFrameName("Police.png");
+		this->setPosition(Point(LEFT_CAR_POSITION + ROAD_LINE_WIDTH * int(2 * CCRANDOM_0_1()), 3 * RESOLUTION_Y / 2));
+
+		Vector<SpriteFrame*> animFrames;
+		animFrames.pushBack(spritecache->getSpriteFrameByName("Police1.png"));
+		animFrames.pushBack(spritecache->getSpriteFrameByName("Police2.png"));
+		animFrames.pushBack(spritecache->getSpriteFrameByName("Police3.png"));
+		auto animation = Animation::createWithSpriteFrames(animFrames, 0.1f);
+		this->runAction(RepeatForever::create(Animate::create(animation)));
+		break;
+	}
+	case Taxi:
+		speed = this->setSpeed(100, 40);
+		this->initWithSpriteFrameName("Taxi.png");
+		this->setPosition(Point(LEFT_CAR_POSITION + ROAD_LINE_WIDTH * int(4 * CCRANDOM_0_1()), 3 * RESOLUTION_Y / 2));
+		break;
+	case Truck:
+		speed = this->setSpeed(60, 20);
+		this->initWithSpriteFrameName("Truck.png");
+		this->setPosition(Point(LEFT_CAR_POSITION + ROAD_LINE_WIDTH * 3, 3 * RESOLUTION_Y / 2));
+		break;
+	default:
+		break;
+	}
+
+	CCLOG("%i, %f, speed=%i", this->getType(), this->getPositionX(), this->getDefaultSpeed());
 }
 
-int Car::defineSpeed(int minSpeed, int deltaSpeed)
+int Car::setSpeed(int minSpeed, int deltaSpeed)
 {
-	int speed = minSpeed + deltaSpeed/* * CCRANDOM_0_1()*/;
-	defaultSpeed = speed;
-	return speed;
+	defaultSpeed = minSpeed + deltaSpeed * CCRANDOM_0_1();
+	return defaultSpeed;
 }
 
 Car* Car::create()
@@ -125,6 +212,11 @@ void Car::modifySpeed(int sp)
 int Car::getSpeed()
 {
 	return speed;
+}
+
+int Car::getType()
+{
+	return this->type;
 }
 
 int Car::getDefaultSpeed()

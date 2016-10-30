@@ -10,7 +10,7 @@ USING_NS_CC;
 Scene* WithCollision::createScene()
 {
     auto scene = Scene::createWithPhysics();
-	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     auto layer = WithCollision::create();
 	layer->setPhysicsWorld(scene->getPhysicsWorld());
     scene->addChild(layer);
@@ -83,7 +83,7 @@ bool WithCollision::init()
 		Point(2 * userWidth / 10, userHeight / 2), Point(-2 * userWidth / 10 , userHeight / 2),
 		Point(-48 * userWidth / 100, 70 * userHeight / 200), Point(-35 * userWidth / 100,-50 * userHeight / 200),
 		Point(-48 * userWidth / 100,-60 * userHeight / 200), Point(-46 * userWidth / 100, -85 * userHeight / 200) };
-	auto body = PhysicsBody::createEdgePolygon(coord.data(), 12);
+	auto body = PhysicsBody::createEdgePolygon(coord.data(), 12,PhysicsMaterial(0,1,0));
 	body->setCollisionBitmask(1);
 	body->setContactTestBitmask(true);
 	user_car->setPhysicsBody(body);
@@ -155,8 +155,26 @@ bool WithCollision::onContactBegin(cocos2d::PhysicsContact & contact)
 	CCLOG("%i,%i", a->getCollisionBitmask(), b->getCollisionBitmask());
 	if ((1 == a->getCollisionBitmask() && 2 == b->getCollisionBitmask()) || (2 == a->getCollisionBitmask() && 1 == b->getCollisionBitmask()))
 	{
-		auto scene = WithCollision::createScene();
-		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, scene));
+		Device::vibrate(0.1f);
+		bool isSecond = false;
+		float speed = 0;
+		if (PhysicsCar *first = dynamic_cast <PhysicsCar*>(a->getNode())) {
+			isSecond = false;
+		speed = first->getSpeed();
+		CCLOG("FIRST SPEED %i", first->getSpeed());
+		first->setPosition(first->getPositionX(), first->getPositionY());
+		}
+
+		if (PhysicsCar *second = dynamic_cast <PhysicsCar*>(b->getNode())) {
+			isSecond = true;
+			speed = second->getSpeed();
+			CCLOG("SECOND SPEED %i", second->getSpeed());
+			second->setPosition(second->getPositionX(), second->getPositionY());
+
+		}
+			auto scene = WithCollision::createScene();
+			Director::getInstance()->replaceScene(TransitionFade::create(1.0f, scene));
+			this->setCarSpeed(speed / 2);
 		CCLOG("Collided");
 	}
 	return false;

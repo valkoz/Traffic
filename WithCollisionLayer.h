@@ -25,6 +25,8 @@ private:
 
 	int carSpeed = MIN_SPEED;
 
+	int getSpeed() { return carSpeed; }
+
 	void update(float dt);
 
 	void renderBackground();
@@ -45,6 +47,8 @@ private:
 
 	void changeSpeed();
 
+	void setCarSpeed(int speed) { carSpeed = speed; };
+	
 public:
     static cocos2d::Scene* createScene();
 

@@ -1,13 +1,13 @@
-#ifndef __HELLOWORLD_SCENE_H__
-#define __HELLOWORLD_SCENE_H__
+#ifndef __WITH_COLLISION_SCENE_H__
+#define __WITH_COLLISION_SCENE_H__
 
 #include "cocos2d.h"
-#include "Car.h"
+#include "PhysicsCar.h"
 #include <vector>
 
-//enum moveOption { brakes = -1, freeMovement, gas };
+//enum PhysicsmoveOption { brakes = -1, freeMovement, gas };
 
-class HelloWorld : public cocos2d::Layer
+class WithCollision : public cocos2d::Layer
 {
 private:
 	cocos2d::Sprite *road;
@@ -15,6 +15,9 @@ private:
 	cocos2d::Sprite *user_car;
 	cocos2d::Sprite *gasButton;
 	cocos2d::Sprite *brakesButton;
+
+	cocos2d::PhysicsWorld *sceneWorld;
+	void setPhysicsWorld(cocos2d::PhysicsWorld *world) { sceneWorld = world; };
 
 	std::vector <double> accInfo;
 
@@ -28,15 +31,15 @@ private:
 
 	void generateNewCar(float dt);
 
-	void removeCarFromLayer(Car *current);
+	void removeCarFromLayer(PhysicsCar *current);
 
-	void checkCarsNearWithUpdate(Car *current);
+	void checkCarsNearWithUpdate(PhysicsCar *current);
 
-	void checkCollisionsWithPlayer(Car *currentCar);
+	void checkCollisionsWithPlayer(PhysicsCar *currentCar);
 
-	void overtake(Car *currentCar);
+	void overtake(PhysicsCar *currentCar);
 
-	bool checkDistanceBetweenPlayerAndCar(Car *currentCar);
+	bool checkDistanceBetweenPlayerAndCar(PhysicsCar *currentCar);
 
 	double returnAccRatio();
 
@@ -55,10 +58,11 @@ public:
 
 	void onTouchMoved(cocos2d::Touch * touch, cocos2d::Event *event);
 
+	bool onContactBegin(cocos2d::PhysicsContact &contact);
 
     
     // implement the "static create()" method manually
-	CREATE_FUNC(HelloWorld);
+	CREATE_FUNC(WithCollision);
 };
 
-#endif // __HELLOWORLD_SCENE_H__
+#endif // __WITH_COLLISION_SCENE_H__

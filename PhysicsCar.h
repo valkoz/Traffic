@@ -1,19 +1,19 @@
-#ifndef __CAR_H__
-#define __CAR_H__
+#ifndef __PHYSICS_CAR_H__
+#define __PHYSICS_CAR_H__
 
 #include "cocos2d.h"
 #include "Definitions.h"
 USING_NS_CC;
 
-//enum CarType {Ambulance, Black_viper, Orange_car, Mini_truck, Mini_van, Police, Taxi, Truck};
+//enum PhisicsCarType {Ambulance, Black_viper, Orange_car, Mini_truck, Mini_van, Police, Taxi, Truck};
 
-/*class MoveOption {
+class PhysicsMoveOption {
 private:
 	bool isFront;
 	bool isLeft;
 	bool isRight;
 public:
-	MoveOption(bool f, bool l, bool r) : isFront(f), isLeft(l), isRight(r) {};
+	PhysicsMoveOption(bool f, bool l, bool r) : isFront(f), isLeft(l), isRight(r) {};
 	void setIsFront(bool f) { isFront = f; };
 	void setIsLeft(bool l) { isLeft = l; };
 	void setIsRight(bool r) { isRight = r; };
@@ -21,13 +21,13 @@ public:
 	bool getIsLeft() { return isLeft; };
 	bool getIsRight() { return isRight; };
 
-};*/
+};
 
-class Car : public cocos2d::Sprite
+class PhysicsCar : public cocos2d::Sprite
 {
 private:
 
-	MoveOption *moveOption = nullptr;
+	PhysicsMoveOption *moveOption = nullptr;
 
 	int speed;
 
@@ -37,7 +37,7 @@ private:
 
 	CarType type;
 
-	Car();
+	PhysicsCar();
 
 	virtual bool init() { return true; };
 
@@ -47,7 +47,7 @@ private:
 
 public:
 
-	static Car* create();
+	static PhysicsCar* create();
 
 	void modifySpeed(int sp);
 
@@ -74,8 +74,8 @@ public:
 	bool getIsLeft() { if (this->moveOption) return moveOption->getIsLeft(); return false; };
 	bool getIsRight() { if (this->moveOption) return moveOption->getIsRight(); return false; };
 
-	virtual ~Car() {};
+	virtual ~PhysicsCar() {};
 
 };
 
-#endif // __CAR_H__
+#endif // __PHYSICS_CAR_H__

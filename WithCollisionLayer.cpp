@@ -10,7 +10,7 @@ USING_NS_CC;
 Scene* WithCollision::createScene()
 {
     auto scene = Scene::createWithPhysics();
-	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     auto layer = WithCollision::create();
 	layer->setPhysicsWorld(scene->getPhysicsWorld());
     scene->addChild(layer);

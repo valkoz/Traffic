@@ -1,6 +1,4 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
-#include "TestCollisionLayer.h"
 #include "WithCollisionLayer.h"
 
 USING_NS_CC;

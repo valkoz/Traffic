@@ -1,102 +1,8 @@
-#include "Car.h"
+#include "PhysicsCar.h"
 #include <array>
 USING_NS_CC;
 
-/*Car::Car()
-{
-	int current_type = 8 * CCRANDOM_0_1();
-	auto spritecache = SpriteFrameCache::getInstance();
-	spritecache->addSpriteFramesWithFile("cars/Cars_sheet.plist");
-
-	switch (current_type) {
-	case 0:
-	{
-		type = Ambulance;
-		speed = this->defineSpeed(100, 20);
-		this->initWithSpriteFrameName("Ambulance.png");
-		this->setPosition(this->definePosition(Ambulance));
-		Vector<SpriteFrame*> animFrames;
-		animFrames.pushBack(spritecache->getSpriteFrameByName("Ambulance1.png"));
-		animFrames.pushBack(spritecache->getSpriteFrameByName("Ambulance2.png"));
-		animFrames.pushBack(spritecache->getSpriteFrameByName("Ambulance3.png"));
-		auto animation = Animation::createWithSpriteFrames(animFrames, 0.5f);
-		this->runAction(RepeatForever::create(Animate::create(animation)));
-		break;
-	}
-	case 1:
-		type = Black_viper;
-		speed = this->defineSpeed(120, 30);
-		this->initWithSpriteFrameName("Black_viper.png");
-		this->setPosition(this->definePosition(Black_viper));
-		break;
-	case 2:
-		type = Orange_car;
-		speed = this->defineSpeed(70, 30);
-		this->initWithSpriteFrameName("Car.png");
-		this->setPosition(this->definePosition(Orange_car));
-
-		//		this->initWithFile("cars/Car.png");
-		break;
-	case 3:
-		type = Mini_truck;
-		speed = this->defineSpeed(50, 10);
-		this->initWithSpriteFrameName("Mini_truck.png");
-		this->setPosition(this->definePosition(Mini_truck));
-
-		//	this->initWithFile("cars/Mini_truck.png");
-		break;
-	case 4:
-		type = Mini_van;
-		speed = this->defineSpeed(60, 20);
-		this->initWithSpriteFrameName("Mini_van.png");
-		this->setPosition(this->definePosition(Mini_van));
-
-		//		this->initWithFile("cars/Mini_van.png");
-		break;
-	case 5:
-	{
-		type = Police;
-		speed = this->defineSpeed(100, 60);
-		//	this->initWithSpriteFrameName("Black_viper.png");
-
-		this->initWithSpriteFrameName("Police.png");
-		this->setPosition(this->definePosition(Police));
-
-		Vector<SpriteFrame*> animFrames;
-		animFrames.pushBack(spritecache->getSpriteFrameByName("Police1.png"));
-		animFrames.pushBack(spritecache->getSpriteFrameByName("Police2.png"));
-		animFrames.pushBack(spritecache->getSpriteFrameByName("Police3.png"));
-		auto animation = Animation::createWithSpriteFrames(animFrames, 0.1f);
-		this->runAction(RepeatForever::create(Animate::create(animation)));
-		break;
-	}
-	case 6:
-		type = Taxi;
-		speed = this->defineSpeed(60, 40);
-		this->initWithSpriteFrameName("Taxi.png");
-		this->setPosition(this->definePosition(Taxi));
-
-		//	this->initWithFile("cars/Taxi.png");
-		break;
-	case 7:
-		type = Truck;
-		speed = this->defineSpeed(40, 40);
-		this->initWithSpriteFrameName("Truck.png");
-		this->setPosition(this->definePosition(Truck));
-
-		//	this->initWithFile("cars/Truck.png");
-		break;
-	default:
-		type = Orange_car;
-		speed = this->defineSpeed(70, 30);
-		this->initWithSpriteFrameName("Car.png");
-		this->setPosition(this->definePosition(Orange_car));
-
-		break;
-	}
-}
-*/
-Car::Car() {
+PhysicsCar::PhysicsCar() {
 	int current_type = 20 * CCRANDOM_0_1();
 	if (current_type < 4)
 		type = Orange_car;
@@ -116,13 +22,13 @@ Car::Car() {
 	this->define(type);
 }
 
-void Car::define(CarType type) {
+void PhysicsCar::define(CarType type) {
 	auto spritecache = SpriteFrameCache::getInstance();
 	spritecache->addSpriteFramesWithFile("cars/Cars_sheet.plist");
 	float height = 0;
 	float width = 0;
 	PhysicsBody *body = nullptr;
-	std::array<Point, 4> coord;
+	std::array<Point, 12> coord;
 	switch (type) {
 	case Ambulance:
 	{
@@ -131,12 +37,16 @@ void Car::define(CarType type) {
 
 		height = this->getBoundingBox().size.height;
 		width = this->getBoundingBox().size.width;
-		coord = { Point(-width / 2 + 5 ,  -height / 2),
-			Point(-width / 2 + 5 , height / 2),
-			Point(width / 2 - 5 ,  height / 2),
-			Point(width / 2 - 5 , -height / 2) };
-		body = PhysicsBody::createEdgePolygon(coord.data(), 4);
-		body->setCollisionBitmask(2);
+		coord = { Point(-this->getBoundingBox().size.width / 2 + 10,  -this->getBoundingBox().size.height / 2),
+			Point(-this->getBoundingBox().size.width / 2 + 10, this->getBoundingBox().size.height / 2 - 10),
+			Point(this->getBoundingBox().size.width / 2 - 10,  this->getBoundingBox().size.height / 2 - 10),
+			Point(this->getBoundingBox().size.width / 2 - 10, -this->getBoundingBox().size.height / 2),
+			Point(this->getBoundingBox().size.width / 2 - 20,  this->getBoundingBox().size.height / 2),
+			Point(-this->getBoundingBox().size.width / 2 + 20,  this->getBoundingBox().size.height / 2) };
+		body = PhysicsBody::createPolygon(coord.data(), 6);
+		body->setCollisionBitmask(2);	
+		body->setDynamic(false);
+		body->setContactTestBitmask(true);
 		this->setPhysicsBody(body);
 
 		this->setPosition(Point(LEFT_CAR_POSITION + ROAD_LINE_WIDTH * int(2 * CCRANDOM_0_1()), 3 * RESOLUTION_Y / 2));
@@ -154,12 +64,13 @@ void Car::define(CarType type) {
 
 		height = this->getBoundingBox().size.height;
 		width = this->getBoundingBox().size.width;
-		coord = { Point(-width / 2 + 5 ,  -height / 2),
-			Point(-width / 2 + 5 , height / 2),
-			Point(width / 2 - 5 ,  height / 2),
-			Point(width / 2 - 5 , -height / 2) };
-		body = PhysicsBody::createEdgePolygon(coord.data(), 4);
+		coord = { Point(-40,-105), Point(40, -105),
+			Point(42, -50), Point(45,70), Point(25, 105), Point(-25,105),
+			Point(-45, 70), Point(-42,-50) };
+		body = PhysicsBody::createEdgePolygon(coord.data(), 8);
 		body->setCollisionBitmask(2);
+		body->setContactTestBitmask(true);
+
 		this->setPhysicsBody(body);
 
 
@@ -177,6 +88,8 @@ void Car::define(CarType type) {
 			Point(width / 2 - 5 , -height / 2) };
 		body = PhysicsBody::createEdgePolygon(coord.data(), 4);
 		body->setCollisionBitmask(2);
+		body->setContactTestBitmask(true);
+
 		this->setPhysicsBody(body);
 		
 
@@ -188,12 +101,14 @@ void Car::define(CarType type) {
 
 		height = this->getBoundingBox().size.height;
 		width = this->getBoundingBox().size.width;
-		coord = { Point(-width / 2 + 5 ,  -height / 2),
-			Point(-width / 2 + 5 , height / 2),
-			Point(width / 2 - 5 ,  height / 2),
-			Point(width / 2 - 5 , -height / 2) };
+		coord = { Point(-width / 2 + 10 ,  -height / 2),
+			Point(-width / 2 + 10 , height / 2),
+			Point(width / 2 - 10 ,  height / 2),
+			Point(width / 2 - 10 , -height / 2) };
 		body = PhysicsBody::createEdgePolygon(coord.data(), 4);
 		body->setCollisionBitmask(2);
+		body->setContactTestBitmask(true);
+
 		this->setPhysicsBody(body);
 
 
@@ -205,12 +120,17 @@ void Car::define(CarType type) {
 
 		height = this->getBoundingBox().size.height;
 		width = this->getBoundingBox().size.width;
-		coord = { Point(-width / 2 + 5 ,  -height / 2),
-			Point(-width / 2 + 5 , height / 2),
-			Point(width / 2 - 5 ,  height / 2),
-			Point(width / 2 - 5 , -height / 2) };
-		body = PhysicsBody::createEdgePolygon(coord.data(), 4);
+		coord = { Point(-width / 2 + 5 * width / 46,  -height / 2),
+			Point(-width / 2 + 5 * width / 46, height / 2 - height / 8),
+			Point(width / 2 - 5 * width / 46,  height / 2 - height / 8),
+			Point(width / 2 - 5 * width / 46, -height / 2),
+			Point(width / 2 - 30 * width / 46, height / 2),
+			Point(-width / 2 + 30 * width / 46, height / 2) };
+		body = PhysicsBody::createPolygon(coord.data(), 6);
+		body->setDynamic(false);
 		body->setCollisionBitmask(2);
+		body->setContactTestBitmask(true);
+
 		this->setPhysicsBody(body);
 
 
@@ -224,12 +144,16 @@ void Car::define(CarType type) {
 
 		height = this->getBoundingBox().size.height;
 		width = this->getBoundingBox().size.width;
-		coord = { Point(-width / 2 + 5 ,  -height / 2),
-			Point(-width / 2 + 5 , height / 2),
-			Point(width / 2 - 5 ,  height / 2),
-			Point(width / 2 - 5 , -height / 2) };
-		body = PhysicsBody::createEdgePolygon(coord.data(), 4);
+		coord = { Point(-3 * width / 10 ,-height / 2), Point(3 * width / 10, -height / 2),
+			Point(46 * width / 100, -85 * height / 200), Point(48 * width / 100, -60 * height / 200),
+			Point(35 * width / 100, -50 * height / 200), Point(48 * width / 100,70 * height / 200),
+			Point(2 * width / 10, height / 2), Point(-2 * width / 10 , height / 2),
+			Point(-48 * width / 100, 70 * height / 200), Point(-35 * width / 100,-50 * height / 200),
+			Point(-48 * width / 100,-60 * height / 200), Point(-46 * width / 100, -85 * height / 200) };
+		body = PhysicsBody::createEdgePolygon(coord.data(), 12);
 		body->setCollisionBitmask(2);
+		body->setContactTestBitmask(true);
+
 		this->setPhysicsBody(body);
 
 
@@ -249,12 +173,14 @@ void Car::define(CarType type) {
 
 		height = this->getBoundingBox().size.height;
 		width = this->getBoundingBox().size.width;
-		coord = { Point(-width / 2 + 5 ,  -height / 2),
-			Point(-width / 2 + 5 , height / 2),
-			Point(width / 2 - 5 ,  height / 2),
-			Point(width / 2 - 5 , -height / 2) };
+		coord = { Point(-width / 2 + 10 ,  -height / 2),
+			Point(-width / 2 + 10 , height / 2),
+			Point(width / 2 - 10 ,  height / 2),
+			Point(width / 2 - 10 , -height / 2) };
 		body = PhysicsBody::createEdgePolygon(coord.data(), 4);
 		body->setCollisionBitmask(2);
+		body->setContactTestBitmask(true);
+
 		this->setPhysicsBody(body);
 
 
@@ -272,6 +198,8 @@ void Car::define(CarType type) {
 			Point(width / 2 - 5 , -height / 2) };
 		body = PhysicsBody::createEdgePolygon(coord.data(), 4);
 		body->setCollisionBitmask(2);
+		body->setContactTestBitmask(true);
+
 		this->setPhysicsBody(body);
 
 
@@ -284,15 +212,15 @@ void Car::define(CarType type) {
 	CCLOG("%i, %f, speed=%i", this->getType(), this->getPositionX(), this->getDefaultSpeed());
 }
 
-int Car::setSpeed(int minSpeed, int deltaSpeed)
+int PhysicsCar::setSpeed(int minSpeed, int deltaSpeed)
 {
 	defaultSpeed = minSpeed + deltaSpeed * CCRANDOM_0_1();
 	return defaultSpeed;
 }
 
-Car* Car::create()
+PhysicsCar* PhysicsCar::create()
 {
-	Car* tmp = new Car();
+	PhysicsCar* tmp = new PhysicsCar();
 	if (tmp->init())
 	{
 		tmp->autorelease();
@@ -302,42 +230,42 @@ Car* Car::create()
 	return NULL;
 }
 
-void Car::modifySpeed(int sp)
+void PhysicsCar::modifySpeed(int sp)
 {
 	speed = sp;
 	return;
 }
 
-int Car::getSpeed()
+int PhysicsCar::getSpeed()
 {
 	return speed;
 }
 
-int Car::getType()
+int PhysicsCar::getType()
 {
 	return this->type;
 }
 
-int Car::getDefaultSpeed()
+int PhysicsCar::getDefaultSpeed()
 {
 	return defaultSpeed;
 }
 
-void Car::decreaseSpeed(int carSpeed)
+void PhysicsCar::decreaseSpeed(int carSpeed)
 {
 	if (this->getSpeed() > 40)
 		this->modifySpeed(this->getSpeed() - 5);
 	this->setPosition(Vec2(this->getPositionX(), this->getPositionY() - 0.1 * (carSpeed - this->getSpeed())));
 }
 
-void Car::increaseSpeed(int carSpeed)
+void PhysicsCar::increaseSpeed(int carSpeed)
 {
 	if (this->getSpeed() < this->getDefaultSpeed())
 		this->modifySpeed(this->getSpeed() + 5);
 	this->setPosition(Vec2(this->getPositionX(), this->getPositionY() - 0.1 * (carSpeed - this->getSpeed())));
 }
 
-void Car::moveToLeftLine(int carSpeed)
+void PhysicsCar::moveToLeftLine(int carSpeed)
 {
 	auto rotateBy = RotateBy::create(0.1, -10.0f);
 	auto rotateOut = RotateBy::create(0.1, 10.0f);
@@ -355,7 +283,7 @@ void Car::moveToLeftLine(int carSpeed)
 
 }
 
-void Car::moveToRightLine(int carSpeed)
+void PhysicsCar::moveToRightLine(int carSpeed)
 {
 	auto rotateBy = RotateBy::create(0.1, 10.0f);
 	auto rotateOut = RotateBy::create(0.1, -10.0f);
@@ -373,7 +301,7 @@ void Car::moveToRightLine(int carSpeed)
 
 }
 
-void Car::setMoveOption(bool f, bool l, bool r)
+void PhysicsCar::setMoveOption(bool f, bool l, bool r)
 {
-	moveOption = new MoveOption(f, l, r);
+	moveOption = new PhysicsMoveOption(f, l, r);
 }

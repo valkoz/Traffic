@@ -4,20 +4,19 @@ Traffic 2D race in cocos2d-xv3.11
 TO DO:
 
   <b>NEXT:</b>
-  <b>To detect collisions - use box2d Engine (getBoundingBox method works incorrectly with rotated sprites</b>
+  <i>To detect collisions - use box2d Engine (getBoundingBox method works incorrectly with rotated sprites</i>
 
 Physics:
-  - Collision detection system
-  - Overtaking logic (Point of overtaking, bot overtaking when user_car nearby algorithm, 1.5*WIDTH_LINE change to 1.7-2)
-  - Overtaking to one line bots (BUG)
+  - <i>Collision detection system </i>
+  - <i>Overtaking logic (Point of overtaking, bot overtaking when user_car nearby algorithm, 1.5*WIDTH_LINE change to 1.7-2)</i>
+  - <i>Overtaking to one line bots (BUG)</i>
   - Distance passed calculating
-  - Speed up/down with accelerometer
   - <i>Speed settings for cars, delta speed enable</i>
   
 Graphics:
   - Animation fix police car
-  - Road black stripe fix
-  - Position of buttons
+  - <i>Road black stripe fix</i>
+  - <i>Position of buttons</i>
   - Stop and change line signals
   - Sounds (crash, emergency)
   - Android bar

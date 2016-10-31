@@ -1,5 +1,5 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
+#include "WithCollisionLayer.h"
 
 USING_NS_CC;
 
@@ -51,7 +51,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	register_all_packages();
 
-	auto scene = HelloWorld::createScene();
+	auto scene = WithCollision::createScene();
 	director->setDisplayStats(true);
 
 	director->runWithScene(scene);
